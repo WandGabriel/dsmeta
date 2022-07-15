@@ -16,6 +16,7 @@ public class SaleController {
 
     @Autowired
     private SaleService service;
+
     @Autowired
     private SmsService smsService;
 
@@ -27,7 +28,7 @@ public class SaleController {
         return service.findSales(minDate, maxDate, pageable);
     }
 
-    @GetMapping("/{id}/notification")
+    @GetMapping("/notification")
     public void notifySms(@PathVariable Long id) {
         smsService.sendSms(id);
     }
