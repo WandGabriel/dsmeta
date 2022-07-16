@@ -4,6 +4,8 @@ import './styles.css';
 import NotificationButton from "../NotificationButton";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {Sale} from "../../models/sale";
+import { BASE_URL } from "../../utils/request";
 
 function SalesCard()  {
 
@@ -14,11 +16,13 @@ function SalesCard()  {
     const [minDate, setMinDate] = useState(new Date(min));
     const [maxDate, setMaxDate] = useState(new Date(max));
 
+    const [sales, setSales] = useState<Sale[]>([])
+
     useEffect(() => {
-        axios.get("http://localhost:8080/sales").then(response => {
-            console.log(response.data);
-        })
-    }, []);
+        axios.get(`${BASE_URL}/sales`).then(response => {
+            setSales(response.data.content);
+        });
+        }, []);
 
     return (
         <div className="dsmeta-card">
@@ -54,52 +58,25 @@ function SalesCard()  {
                         <th>Notificar</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td className="show992">#341</td>
-                        <td className="show576">08/07/2021</td>
-                        <td>Anakin</td>
-                        <td className="show992">15</td>
-                        <td className="show992">11</td>
-                        <td>R$ 5000.00</td>
-                        <td>
-                            <div className="dsmeta-red-button-container">
-                                <div className="dsmeta-red-button">
-                                    <NotificationButton />
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="show992">#341</td>
-                        <td className="show576">08/07/2021</td>
-                        <td>Anakin</td>
-                        <td className="show992">15</td>
-                        <td className="show992">11</td>
-                        <td>R$ 5000.00</td>
-                        <td>
-                            <div className="dsmeta-red-button-container">
-                                <div className="dsmeta-red-button">
-                                    <NotificationButton />
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="show992">#341</td>
-                        <td className="show576">08/07/2021</td>
-                        <td>Anakin</td>
-                        <td className="show992">15</td>
-                        <td className="show992">11</td>
-                        <td>R$ 5000.00</td>
-                        <td>
-                            <div className="dsmeta-red-button-container">
-                                <div className="dsmeta-red-button">
-                                    <NotificationButton />
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                    <tbody> { sales.map(sale => {
+                            return (
+                                <tr key={sale.id}>
+                                    <td className="show992">{sale.id}</td>
+                                    <td className="show576">{new Date(sale.date).toLocaleDateString()}</td>
+                                    <td>{sale.sellerName}</td>
+                                    <td className="show992">{sale.visited}</td>
+                                    <td className="show992">{sale.deals}</td>
+                                    <td>R$ {sale.amount.toFixed(2)}</td>
+                                    <td>
+                                        <div className="dsmeta-red-button-container">
+                                            <div className="dsmeta-red-button">
+                                                <NotificationButton />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </div>
